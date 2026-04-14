@@ -6,22 +6,54 @@
 
       <div class="info-box">
         <h2>Tvoj studentski planer</h2>
-        <p>
-          Ovdje ćeš uskoro moći pratiti kolegije, zadatke, rokove i napredak u učenju.
-        </p>
+        <p>Ovdje ćeš uskoro moći pratiti kolegije, zadatke, rokove i napredak u učenju.</p>
       </div>
 
-      <button @click="handleLogout">Odjavi se</button>
+      <div class="add-subject">
+        <h3>Dodaj kolegij</h3>
+
+        <input
+          v-model="subjectName"
+          type="text"
+          placeholder="Naziv kolegija"
+        />
+
+        <button @click="handleAddSubject">Dodaj</button>
+      </div>
+
+      <button class="logout-btn" @click="handleLogout">Odjavi se</button>
     </div>
   </div>
 </template>
 
 <script>
 import { logoutUser } from '../services/auth'
+import { addSubject } from '../services/subject'
 
 export default {
   name: 'HomeView',
+  data() {
+    return {
+      subjectName: '',
+    }
+  },
   methods: {
+    async handleAddSubject() {
+      if (!this.subjectName.trim()) {
+        alert('Unesi naziv kolegija.')
+        return
+      }
+
+      try {
+        await addSubject(this.subjectName.trim())
+        alert('Kolegij dodan!')
+        this.subjectName = ''
+      } catch (error) {
+        console.error('Greška kod dodavanja kolegija:', error)
+        alert('Dogodila se greška kod spremanja kolegija.')
+      }
+    },
+
     async handleLogout() {
       try {
         await logoutUser()
@@ -82,13 +114,32 @@ export default {
   line-height: 1.5;
 }
 
-button {
-  padding: 12px 20px;
+.add-subject {
+  margin-bottom: 24px;
+}
+
+.add-subject h3 {
+  margin-bottom: 12px;
+}
+
+.add-subject input {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-right: 8px;
+}
+
+.add-subject button,
+.logout-btn {
+  padding: 10px 16px;
   border: none;
   border-radius: 8px;
   background-color: #d93025;
   color: white;
-  font-size: 15px;
   cursor: pointer;
+}
+
+.logout-btn {
+  margin-top: 8px;
 }
 </style>

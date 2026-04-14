@@ -37,3 +37,13 @@ __screenshots__/
 
 # Vite
 *.timestamp-*-*.mjs
+
+# Firebase
+.firebase
+
+# Env (ako budete koristili kasnije)
+.env
+.env.*
+
+# Build cache
+dist
