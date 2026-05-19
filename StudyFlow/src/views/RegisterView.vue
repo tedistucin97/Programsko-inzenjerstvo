@@ -5,6 +5,28 @@
 
       <form @submit.prevent="handleRegister" class="auth-form">
         <div class="form-group">
+          <label for="firstName">Ime</label>
+          <input
+            id="firstName"
+            v-model="firstName"
+            type="text"
+            placeholder="Unesite ime"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Prezime</label>
+          <input
+            id="lastName"
+            v-model="lastName"
+            type="text"
+            placeholder="Unesite prezime"
+            required
+          />
+        </div>
+
+        <div class="form-group">
           <label for="email">Email</label>
           <input
             id="email"
@@ -54,11 +76,14 @@
 
 <script>
 import { registerUser } from '../services/auth'
+import { saveUserProfile } from '../services/user'
 
 export default {
   name: 'RegisterView',
   data() {
     return {
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -83,7 +108,12 @@ export default {
       this.loading = true
 
       try {
-        await registerUser(this.email, this.password)
+        const credential = await registerUser(this.email, this.password)
+        await saveUserProfile(credential.user.uid, {
+          firstName: this.firstName.trim(),
+          lastName: this.lastName.trim(),
+          email: this.email,
+        })
         this.$router.push('/home')
       } catch (error) {
         switch (error.code) {
